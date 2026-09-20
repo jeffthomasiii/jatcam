@@ -1,0 +1,18 @@
+{
+  "name": "JATcam",
+  "short_name": "JATcam",
+  "description": "Private photo library for JAT.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#faf9f5",
+  "theme_color": "#2f4a32",
+  "icons": [
+    {
+      "src": "./assets/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

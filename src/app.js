@@ -85,7 +85,7 @@ function photoCard(p){return `<button class="photo-card" data-photo="${p.id}" ar
 function albumsView(){return `<section class="page"><div class="page-title"><div><p class="eyebrow">COLLECTIONS</p><h1>Albums</h1></div><button class="round-action">+</button></div><div class="segmented"><button class="selected">My Albums</button><button>Shared</button><button>Favorites</button></div><div class="album-list">${albums.map(a=>{const p=state.photos.find(x=>x.id===a.cover) || demoPhotos.find(x=>x.id===a.cover);return `<button class="album-row"><img src="${p.src}" alt=""/><span><strong>${a.name}</strong><small>${a.count} photos</small></span><b>•••</b></button>`}).join('')}</div></section>`}
 
 function uploadView(){return `<section class="page narrow"><div class="page-title"><div><p class="eyebrow">IMPORT</p><h1>Upload Photos</h1></div></div><label class="dropzone"><input type="file" id="fileInput" accept="image/*,.cr2" multiple/><span class="plus">+</span><strong>Add Photos</strong><small>Tap to select photos or RAW files</small></label><div class="upload-options"><button>${icon('camera')}<span><strong>Camera Connect</strong><small>Import after transfer from your Canon camera</small></span>›</button><button id="phoneUpload">${icon('add')}<span><strong>From Phone</strong><small>Choose from this device</small></span>›</button><button>${icon('albums')}<span><strong>From SD Card</strong><small>Use your device or card reader</small></span>›</button><button>${icon('download')}<span><strong>From Desktop</strong><small>Drag & drop or select files</small></span>›</button></div>${uploadStatus()}</section>`}
-function uploadStatus(){if(!state.upload)return `<div class="upload-note">${icon('cloud')}<span><strong>RAW + JPG supported</strong><small>Original quality. Private OneDrive storage.</small></span></div>`;return `<div class="upload-progress"><div>${icon('cloud')}<span><strong>Uploading to OneDrive…</strong><small>${state.upload.complete} of ${state.upload.total}${state.upload.name?` · ${state.upload.name}`:''}</small></span></div><progress max="${state.upload.total}" value="${state.upload.complete}"></progress></div>`}
+function uploadStatus(){if(!state.upload)return `<div class="upload-note">${icon('cloud')}<span><strong>RAW + JPG supported</strong><small>Original quality. Private OneDrive storage.</small></span></div>`;return `<div class="upload-progress"><div>${icon('cloud')}<span><strong>${state.bridge.connected?'Sending to JATcam Bridge…':'Demo upload…'}</strong><small>${state.upload.complete} of ${state.upload.total}${state.upload.name?` · ${state.upload.name}`:''}</small></span></div><progress max="${state.upload.total}" value="${state.upload.complete}"></progress></div>`}
 
 function searchView(){
  const q=state.query.toLowerCase().trim(); const filtered=state.photos.filter(p=>!q || [p.title,p.album,p.camera,p.type,p.location,...p.tags].join(' ').toLowerCase().includes(q));
@@ -120,7 +120,6 @@ async function upload(fileList){
   if(!files.length)return;
   state.upload={complete:0,total:files.length,name:''};
   render();
-bootstrapBridge().then(render).catch(error=>{state.bridge.error=error.message;render();});
   try{
     await BridgeAdapter.uploadFiles(files,p=>{state.upload=p;render();});
     await refreshBridgePhotos(false);
@@ -158,3 +157,4 @@ async function bootstrapBridge(){
 
 if('serviceWorker' in navigator) window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
 render();
+bootstrapBridge().then(render).catch(error=>{state.bridge.error=error.message;render();});

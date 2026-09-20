@@ -22,10 +22,13 @@ python -m http.server 8080
 
 Then open `http://localhost:8080` from this folder.
 
-## Phase 2
-1. Microsoft Entra app registration
-2. MSAL browser authentication
-3. `Files.ReadWrite.AppFolder`
-4. OneDrive `/Apps/JATcam` bootstrap
-5. Real photo listing, thumbnail retrieval and resumable uploads
-6. JSON metadata store for ratings/tags/albums
+## Phase 2 — Local Bridge
+JATcam currently uses a local Windows bridge instead of Microsoft Graph.
+
+1. The bridge writes directly into the existing local OneDrive sync folder.
+2. OneDrive's normal Windows sync client handles cloud backup.
+3. Tailscale Serve provides a private HTTPS path from the PWA/phone to the PC.
+4. No Azure subscription, Entra app registration, or Microsoft Graph credentials are required.
+5. Direct Microsoft Graph support remains parked as a future option.
+
+See [bridge/README.md](bridge/README.md) for setup and usage.
